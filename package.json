@@ -5,13 +5,13 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client-install": "cd client && install",
-    "client-build": "cd client && npm rum build",
+    "client-install": "cd client && npm install",
+    "client-build": "cd client && npm run build",
     "heroku-postbuild": "npm run client-install && npm run client-build"
   },
-  "author": "Tarannum",
+  "author": "tarannum",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
