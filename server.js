@@ -1,12 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
 import bodyParser from 'body-parser';
 import {v4 as uuid} from 'uuid';
 import Connection from './database/db.js';
 import DefaultData from './default.js';
 import Router from './routes/route.js';
 
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -17,18 +19,20 @@ app.use(bodyParser.json({extended: true}));
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use('/', Router);
 
+app.use(express.static(path.join(__dirname,"./client/build")));
+
+app.get('*', function(_, res) {
+   res.sendFile(path.join(__dirname, "./client/build/index.html"), function(err) {
+        res.status(500).send(err);
+   })
+})
+
 const PORT = process.env.PORT || 7000;
 
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.DB_PASSWORD;
 
-const URL = process.env.MONGODB_URI || `mongodb://${USERNAME}:${PASSWORD}@ac-wawlzfy-shard-00-00.6r8obha.mongodb.net:27017,ac-wawlzfy-shard-00-01.6r8obha.mongodb.net:27017,ac-wawlzfy-shard-00-02.6r8obha.mongodb.net:27017/?ssl=true&replicaSet=atlas-uhid4i-shard-0&authSource=admin&retryWrites=true&w=majority`;
-
-Connection(URL);
-
-if(process.env.NODE_ENV === 'production') {
-   app.use(express.static('client/build'))
-}
+Connection(USERNAME,PASSWORD);
 
 app.listen(PORT,() => console.log(`Server is running on PORT ${PORT}`))
 
